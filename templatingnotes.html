@@ -1,0 +1,79 @@
+<html>
+<head>
+	<title>jQuery!</title>
+</head>
+<body>
+	<script type="text/template" id="person-template">
+		<div class="person">
+			<p class="name"><%= name %></p>
+			<p class="favorite-food"><%= favoriteFood %></p>
+			<p class="random-fact"><%= randomFact %></p>
+			<label for="<%= name %>-name-input">Name</label>
+			<input id="<%= name %>-name-input" type="text" class="name-input">
+			<label for="<%= name %>-food-input">Food</label>
+			<input id="<%= name %>-food-input" type="text" class="food-input">
+			<label for="<%= name %>-fact-input">Fact</label>
+			<input id="<%= name %>-fact-input" type="text" class="fact-input">
+			<button>Update</button>
+		</div>
+	</script>
+
+	<script src="http://underscorejs.org/underscore-min.js"></script>
+	<script src="https://code.jquery.com/jquery-2.1.1.js"></script>
+	<script type="text/javascript">
+		var peopleData = [{
+			name: "Alice",
+			favoriteFood: "Apple",
+			randomFact: "I like apples"
+		}, {
+			name: "Bob",
+			favoriteFood: "Blueberry",
+			randomFact: "I don't like blueberries"
+		}];
+
+		function Person(name, favoriteFood, randomFact) {
+			var HTMLString = $('#person-template').html();
+			var preppedTemplate = _.template(HTMLString);
+
+			this.name = name;
+			this.favoriteFood = favoriteFood;
+			this.randomFact   = randomFact;
+
+			this.render = function() {
+				this // whatever Person you're working with
+				var oldView = undefined;
+				if (this.$view) {
+					oldView = this.$view;
+				}
+				var compiledHTML = preppedTemplate({
+					name: this.name,
+					favoriteFood: this.favoriteFood,
+					randomFact: this.randomFact
+				});
+				var me = this; // <- store
+				this.$view = $(compiledHTML);
+				this.$view.find('button').on('click', function() {
+					// this // -> the DOM element button inside view
+					// me // -> whatever Person you're working with
+					me.name = me.$view.find('.name-input').val();
+					me.favoriteFood = me.$view.find('.food-input').val();
+					me.randomFact = me.$view.find('.fact-input').val();
+					me.render();
+				});
+				if (oldView) {
+					oldView.replaceWith(this.$view);
+				} else {
+					$('body').append(this.$view);
+				}
+			}
+
+			this.render();
+		}
+
+		for (var i in peopleData) {
+			var personData = peopleData[i];
+			new Person(personData.name, personData.favoriteFood, personData.randomFact);
+		}
+	</script>
+</body>
+</html>
