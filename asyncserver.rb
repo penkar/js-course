@@ -2,7 +2,7 @@ require 'sinatra'
 require 'json'
 
 # Comment this out if you're not using Vagrant.
-set :bind, '10.10.10.10'
+# set :bind, '10.10.10.10'
 
 string = "Whosever room this is should be ashamed!\n"\
 		"His underwear is hanging on the lamp.\n"\
